@@ -1,0 +1,10 @@
+notes.md
+readme.md
+.env
+node_modules/
+dist/
+coverage/
+frontend/node_modules/
+frontend/.next/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo

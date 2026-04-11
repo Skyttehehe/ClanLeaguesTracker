@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clan Check</title>
+    <style>
+      :root {
+        --bg: radial-gradient(circle at 20% 20%, #ffffff, #f6eed8 55%, #dce7d5 100%);
+        --panel: rgba(255, 255, 255, 0.85);
+        --panel-border: rgba(32, 75, 58, 0.2);
+        --text: #1f2937;
+        --text-muted: #4b5563;
+        --accent: #204b3a;
+        --accent-hover: #163628;
+        --danger: #b03a48;
+        --ok: #2a9d8f;
+        --input-bg: #ffffff;
+        --input-border: rgba(32, 75, 58, 0.25);
+        --result-bg: rgba(32, 75, 58, 0.07);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+      }
+
+      html.dark {
+        --bg: #191a1b;
+        --panel: #1e1f20;
+        --panel-border: #363738;
+        --text: #cccccc;
+        --text-muted: #8b8b8b;
+        --accent: #204b3a;
+        --accent-hover: #163628;
+        --danger: #f87171;
+        --ok: #4ade80;
+        --input-bg: #2d2e2f;
+        --input-border: #363738;
+        --result-bg: #252627;
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        transition: background 0.2s, color 0.2s;
+      }
+
+      .card {
+        width: min(560px, 100%);
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        padding: 32px;
+        animation: fadeIn 420ms ease;
+        backdrop-filter: blur(8px);
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: 1.8rem;
+        color: var(--accent);
+      }
+
+      html.dark h1 {
+        color: #e5e5e5;
+      }
+
+      p {
+        margin: 0 0 20px;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+
+      form {
+        display: grid;
+        gap: 14px;
+      }
+
+      label {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      input {
+        width: 100%;
+        margin-top: 6px;
+        border: 1px solid var(--input-border);
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 1rem;
+        background: var(--input-bg);
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+
+      input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(32, 75, 58, 0.15);
+      }
+
+      button[type="submit"] {
+        border: 0;
+        border-radius: 12px;
+        padding: 11px 16px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: var(--accent);
+        cursor: pointer;
+        transition: background 0.15s, opacity 0.15s;
+      }
+
+      button[type="submit"]:hover:not(:disabled) {
+        background: var(--accent-hover);
+      }
+
+      button[type="submit"]:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
+
+      .result {
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: var(--result-bg);
+        border: 1px solid var(--panel-border);
+        min-height: 42px;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+      }
+
+      .ok {
+        color: var(--ok);
+        font-weight: 700;
+      }
+
+      .error {
+        color: var(--danger);
+        font-weight: 700;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 50;
+        border: 1px solid var(--panel-border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: background 0.15s, color 0.15s;
+      }
+
+      .theme-toggle:hover {
+        background: var(--result-bg);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme = stored === "dark" || stored === "light" ? stored : (prefersDark ? "dark" : "light");
+          if (theme === "dark") document.documentElement.classList.add("dark");
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <button class="theme-toggle" id="theme-toggle">Light</button>
+    <main class="card">
+      <h1>Clan Membership Check</h1>
+      <p>Enter your clan and username.</p>
+
+      <form id="clan-form">
+        <label>
+          Clan name
+          <input id="clan" name="clan" type="text" placeholder="obsidian" required />
+        </label>
+
+        <label>
+          Username
+          <input id="username" name="username" type="text" placeholder="skytte" required />
+        </label>
+
+        <button id="submit" type="submit">Check membership</button>
+      </form>
+
+      <div class="result" id="result">Waiting for input...</div>
+    </main>
+
+    <script>
+      const themeBtn = document.getElementById("theme-toggle");
+
+      function getCurrentTheme() {
+        return document.documentElement.classList.contains("dark") ? "dark" : "light";
+      }
+
+      function applyTheme(theme) {
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+        themeBtn.textContent = theme === "dark" ? "Dark" : "Light";
+        try { localStorage.setItem("theme", theme); } catch (_) {}
+      }
+
+      // Sync button label with current state
+      themeBtn.textContent = getCurrentTheme() === "dark" ? "Dark" : "Light";
+
+      themeBtn.addEventListener("click", function () {
+        applyTheme(getCurrentTheme() === "dark" ? "light" : "dark");
+      });
+
+      const form = document.getElementById("clan-form");
+      const submitBtn = document.getElementById("submit");
+      const result = document.getElementById("result");
+
+      const normalize = (value) => value.trim().toLowerCase();
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const clan = normalize(document.getElementById("clan").value);
+        const username = normalize(document.getElementById("username").value);
+
+        if (!clan || !username) {
+          result.className = "result error";
+          result.textContent = "Please enter both clan and username.";
+          return;
+        }
+
+        submitBtn.disabled = true;
+        result.className = "result";
+        result.textContent = "Checking...";
+
+        try {
+          const response = await fetch(`/groups/members?name=${encodeURIComponent(clan)}`);
+          const payload = await response.json();
+
+          if (!response.ok) {
+            result.className = "result error";
+            result.textContent = payload.error || "Could not fetch clan members.";
+            return;
+          }
+
+          const found = payload.members.some((m) => normalize(m.username) === username);
+
+          if (found) {
+            result.className = "result ok";
+            result.textContent = `${username} is in ${payload.group.name}.`;
+          } else {
+            result.className = "result error";
+            result.textContent = `${username} is not listed in ${payload.group.name}.`;
+          }
+        } catch (_error) {
+          result.className = "result error";
+          result.textContent = "Network error while checking membership.";
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
