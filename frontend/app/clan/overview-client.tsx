@@ -477,7 +477,12 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-forest/60 dark:text-slate-400">My League Profile</p>
-                  <p className="mt-0.5 font-display text-lg font-bold text-forest dark:text-slate-200">{currentUsername}</p>
+                  <div className="mt-0.5 flex items-center gap-3">
+                    <p className="font-display text-lg font-bold text-forest dark:text-slate-200">{currentUsername}</p>
+                    <span className="rounded-md bg-forest/10 px-2 py-0.5 text-sm font-semibold text-forest dark:bg-vscode-input dark:text-slate-200">
+                      {(me?.points ?? 0).toLocaleString()} pts
+                    </span>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button
