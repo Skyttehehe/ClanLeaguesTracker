@@ -29,8 +29,9 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma
 
-# Install production deps only
-RUN npm ci --only=production
+# Install production deps only — skip scripts so postinstall (prisma generate)
+# doesn't run before the prisma CLI is copied from the builder stage
+RUN npm ci --only=production --ignore-scripts
 
 # Copy prisma CLI from builder so we can run generate in this stage
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
