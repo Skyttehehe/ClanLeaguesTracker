@@ -18,6 +18,7 @@
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
     "test": "jest --runInBand",
+    "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
