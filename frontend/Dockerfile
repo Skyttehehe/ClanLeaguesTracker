@@ -1,31 +1,32 @@
-# Frontend Dockerfile - Multi-stage build
+# Frontend Dockerfile - Next.js standalone build
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
 RUN npm ci
 
-# Copy source code
 COPY . .
 
-# Build Next.js
+# NEXT_PUBLIC_* vars are baked into the JS bundle at build time.
+# Set NEXT_PUBLIC_API_BASE_URL in Railway as a build environment variable.
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
 RUN npm run build
 
-# Production stage
+# Production stage - standalone output is self-contained
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Copy built app
-COPY --from=builder /app/.next ./.next
+# standalone/ contains its own node_modules - no npm install needed
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-EXPOSE 3001
+# Railway sets PORT dynamically; Next.js standalone server.js reads it automatically
+EXPOSE 3000
+ENV PORT=3000
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
