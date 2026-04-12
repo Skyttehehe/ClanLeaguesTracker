@@ -5,6 +5,7 @@
   "description": "Full-stack clan tracker with Express API and Next.js app",
   "main": "dist/server.js",
   "scripts": {
+    "start": "sh start.sh",
     "dev": "npm run dev:infra && concurrently \"npm run dev:api\" \"npm run dev:web\"",
     "dev:api": "tsx watch src/server.ts",
     "dev:web": "npm --prefix frontend run dev",
@@ -21,8 +22,7 @@
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
-    "start": "sh start.sh"
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
