@@ -23,7 +23,6 @@ WORKDIR /app
 # standalone/ contains its own node_modules - no npm install needed
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
 
 # Railway sets PORT dynamically; Next.js standalone server.js reads it automatically
 EXPOSE 3000
