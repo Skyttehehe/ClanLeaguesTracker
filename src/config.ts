@@ -22,6 +22,8 @@ export const config = {
   rateLimitWindowMs: 60_000,
   rateLimitMaxRequests: 20,
   womBaseUrl: process.env.WOM_BASE_URL ?? "https://api.wiseoldman.net/v2",
+  womApiKey: process.env.WOM_API_KEY ?? "",
+  womUserAgent: process.env.WOM_USER_AGENT ?? "ClanLeaguesTracker",
   databaseUrl:
     process.env.DATABASE_URL ??
     "postgresql://postgres:postgres@localhost:5432/clan_leagues_tracker?schema=public",

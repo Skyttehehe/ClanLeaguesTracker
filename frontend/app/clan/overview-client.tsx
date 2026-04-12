@@ -580,7 +580,7 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
                       maxLength={300}
                       rows={3}
                       className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-forest focus:ring-2 focus:ring-forest/20 dark:border-vscode-border dark:bg-vscode-input dark:text-slate-200 dark:placeholder-slate-500"
-                      placeholder="I want to raid in Morytania"
+                      placeholder="I want to raid in Morytania/I want to do BA in Kandarin"
                     />
 
                     <div className="mt-2">

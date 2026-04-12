@@ -48,18 +48,29 @@ type StoredRegionSelection = {
   points: number;
 };
 
+const womFetchHeaders = (): HeadersInit => {
+  const headers: Record<string, string> = {
+    "User-Agent": config.womUserAgent,
+  };
+  if (config.womApiKey) {
+    headers["x-api-key"] = config.womApiKey;
+  }
+  return headers;
+};
+
 const getGroupDetailsByName = async (name: string): Promise<WomGroupDetails> => {
   const searchUrl = `${config.womBaseUrl}/groups?name=${encodeURIComponent(name)}`;
-  const groupsResponse = await fetch(searchUrl);
+  const groupsResponse = await fetch(searchUrl, { headers: womFetchHeaders() });
+
+  if (!groupsResponse.ok) {
+    throw new Error(`GROUP_SEARCH_FAILED (HTTP ${groupsResponse.status})`);
+  }
+
   const groupsBody = (await groupsResponse.json()) as Array<{
     id: number;
     name: string;
     clanChat: string | null;
   }>;
-
-  if (!groupsResponse.ok) {
-    throw new Error("GROUP_SEARCH_FAILED");
-  }
 
   const normalizedName = name.toLowerCase();
   const group =
@@ -74,12 +85,13 @@ const getGroupDetailsByName = async (name: string): Promise<WomGroupDetails> => 
   }
 
   const detailsUrl = `${config.womBaseUrl}/groups/${group.id}`;
-  const detailsResponse = await fetch(detailsUrl);
-  const detailsBody = (await detailsResponse.json()) as WomGroupDetails;
+  const detailsResponse = await fetch(detailsUrl, { headers: womFetchHeaders() });
 
   if (!detailsResponse.ok) {
-    throw new Error("GROUP_DETAILS_FAILED");
+    throw new Error(`GROUP_DETAILS_FAILED (HTTP ${detailsResponse.status})`);
   }
+
+  const detailsBody = (await detailsResponse.json()) as WomGroupDetails;
 
   return detailsBody;
 };
@@ -259,8 +271,8 @@ app.get("/players/search", async (req: Request, res: Response) => {
   const endpoint = `${config.womBaseUrl}/players/search?username=${encodeURIComponent(username)}`;
 
   try {
-    const response = await fetch(endpoint);
-    const body = await response.json();
+    const response = await fetch(endpoint, { headers: womFetchHeaders() });
+    const body = await response.json().catch(() => null);
 
     if (!response.ok) {
       return res.status(response.status).json({
