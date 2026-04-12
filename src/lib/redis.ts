@@ -9,6 +9,14 @@ export const getRedisConnection = (): IORedis => {
     redisConnection = new IORedis(config.redisUrl, {
       maxRetriesPerRequest: null,
       lazyConnect: true,
+      enableOfflineQueue: false,
+      retryStrategy: (times) => {
+        if (times > 3) {
+          console.warn(`Redis unavailable after ${times} retries — giving up`);
+          return null; // stop retrying
+        }
+        return Math.min(times * 500, 2000);
+      },
     });
 
     redisConnection.on("error", (error: Error) => {
