@@ -98,6 +98,8 @@ const getGroupDetailsByName = async (name: string): Promise<WomGroupDetails> => 
 
 export const app = express();
 
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin: (origin, callback) => {
