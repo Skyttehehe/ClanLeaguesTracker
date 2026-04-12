@@ -39,9 +39,11 @@ COPY --from=builder /app/node_modules/@prisma/engines ./node_modules/@prisma/eng
 # Generate the client with the correct binary for this image's runtime
 RUN npx prisma generate
 
-# Copy compiled app
+# Copy compiled app and startup script
 COPY --from=builder /app/dist ./dist
+COPY start.sh ./start.sh
+RUN chmod +x start.sh
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy; node dist/server.js"]
+CMD ["sh", "start.sh"]
