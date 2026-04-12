@@ -19,6 +19,7 @@ const parsePort = (value: string | undefined): number => {
 export const config = {
   port: parsePort(process.env.PORT),
   frontendUrl: process.env.FRONTEND_URL ?? "http://localhost:3001",
+  corsOrigin: process.env.CORS_ORIGIN ?? "",
   rateLimitWindowMs: 60_000,
   rateLimitMaxRequests: 20,
   womBaseUrl: process.env.WOM_BASE_URL ?? "https://api.wiseoldman.net/v2",

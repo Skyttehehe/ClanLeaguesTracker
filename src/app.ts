@@ -103,20 +103,17 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow development URLs and missing origin (same-origin requests)
-      const devOrigins = [
+      const allowed = new Set([
         "http://localhost:3001",
         "http://127.0.0.1:3001",
         config.frontendUrl,
-      ];
-      
-      if (!origin || devOrigins.includes(origin)) {
+        ...(config.corsOrigin ? config.corsOrigin.split(",").map((o) => o.trim()) : []),
+      ]);
+
+      if (!origin || allowed.has(origin)) {
         callback(null, true);
-      } else if (process.env.NODE_ENV === "production") {
-        callback(new Error("Not allowed by CORS"));
       } else {
-        // Allow all origins in development
-        callback(null, true);
+        callback(new Error(`CORS: origin '${origin}' not allowed`));
       }
     },
     credentials: true,

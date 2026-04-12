@@ -117,7 +117,7 @@ export default function HomePageContent() {
       }
     } catch (error) {
       setStatus("error");
-      setResult("Could not reach backend API.");
+      setResult(`Could not reach backend API (${API_BASE}). Check NEXT_PUBLIC_API_BASE_URL.`);
       console.error("Login error:", error);
     } finally {
       setLoading(false);
