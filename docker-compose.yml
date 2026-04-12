@@ -48,9 +48,17 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
+      # Internal service URLs — point to sibling containers; do not change these.
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/clan_leagues_tracker
       REDIS_URL: redis://redis:6379
       PORT: 3000
+      # User-configurable — set in a .env file (copy .env.example → .env)
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3001}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3001}
+      WOM_API_KEY: ${WOM_API_KEY:-}
+      WOM_USER_AGENT: ${WOM_USER_AGENT:-ClanLeaguesTracker/1.0}
+      WOM_BASE_URL: ${WOM_BASE_URL:-https://api.wiseoldman.net/v2}
+      QUEUE_NAME: ${QUEUE_NAME:-clan-sync-queue}
     ports:
       - "3000:3000"
     healthcheck:
@@ -65,6 +73,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # Baked into the JS bundle at build time — must be the URL a browser can reach.
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:3000}
     container_name: clantracker-frontend
     restart: unless-stopped
     depends_on:
@@ -72,6 +83,7 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
+      PORT: "3001"
     ports:
       - "3001:3001"
     networks:
