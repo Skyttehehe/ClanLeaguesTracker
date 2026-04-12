@@ -17,7 +17,7 @@ const parsePort = (value: string | undefined): number => {
 };
 
 export const config = {
-  port: parsePort(process.env.PORT),
+  port: Number(process.env.PORT || 3000),
   frontendUrl: process.env.FRONTEND_URL ?? "http://localhost:3001",
   corsOrigin: process.env.CORS_ORIGIN ?? "",
   rateLimitWindowMs: 60_000,
