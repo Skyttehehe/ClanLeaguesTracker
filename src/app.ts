@@ -144,10 +144,6 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ ok: true });
 });
 
-app.get("/", (_req, res) => {
-  res.status(200).json({ message: "ClanLeaguesTracker API" });
-});
-
 app.get("/health/deps", async (_req, res) => {
   const checks = {
     postgres: false,
