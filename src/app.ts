@@ -113,6 +113,7 @@ app.use(
       if (!origin || allowed.has(origin)) {
         callback(null, true);
       } else {
+        console.warn(`CORS blocked origin: '${origin}'. Allowed: ${[...allowed].join(", ")}`);
         callback(new Error(`CORS: origin '${origin}' not allowed`));
       }
     },
