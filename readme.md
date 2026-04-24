@@ -103,6 +103,54 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
 | GET    | `/groups/members?name=`       | List group members by name      |
 | POST   | `/ingest`                     | Enqueue a clan sync job         |
 
+## Vercel Deployment
+
+Deploy as two separate Vercel projects from the same repo.
+
+### Prerequisites
+
+| Service    | Recommended provider                          |
+|------------|-----------------------------------------------|
+| PostgreSQL | [Vercel Postgres (Neon)](https://vercel.com/docs/storage/vercel-postgres) or [Supabase](https://supabase.com) |
+| Redis      | [Upstash Redis](https://upstash.com) (serverless-compatible) |
+
+> The BullMQ worker (`src/worker.ts`) requires a long-running process and cannot run on Vercel. Leave the worker off Vercel or use a separate service (e.g. a free Render worker).
+
+### Project 1 — Frontend
+
+1. Create a new Vercel project, connect your repo.
+2. Set **Root Directory** to `frontend/`.
+3. Vercel auto-detects **Next.js** — no preset change needed.
+4. Add environment variable:
+
+   | Variable                   | Value                          |
+   |----------------------------|--------------------------------|
+   | `NEXT_PUBLIC_API_BASE_URL` | Your backend Vercel URL (see below) |
+
+### Project 2 — Backend API
+
+1. Create a second Vercel project from the same repo.
+2. Leave **Root Directory** as `/` (root).
+3. Set **Framework Preset** to **Other**.
+4. The `vercel.json` at the root routes all requests to `api/index.ts` (the Express serverless entry point).
+5. Add environment variables:
+
+   | Variable          | Value                                        |
+   |-------------------|----------------------------------------------|
+   | `FRONTEND_URL`    | Your frontend Vercel URL                     |
+   | `CORS_ORIGIN`     | Your frontend Vercel URL                     |
+   | `WOM_BASE_URL`    | `https://api.wiseoldman.net/v2`              |
+   | `WOM_API_KEY`     | Your WOM API key                             |
+   | `WOM_USER_AGENT`  | Your user agent string                       |
+   | `DATABASE_URL`    | Connection string from your Postgres provider (append `?pgbouncer=true&connect_timeout=10` for Vercel Postgres) |
+   | `REDIS_URL`       | `rediss://:password@host:6379` from Upstash  |
+   | `QUEUE_NAME`      | `clan-sync-queue`                            |
+
+6. After first deploy, run migrations from your local machine pointing at the cloud DB:
+   ```bash
+   DATABASE_URL="your_cloud_db_url" npm run prisma:migrate
+   ```
+
 ## Notes
 
 - Global API rate limit: 20 requests per 60 seconds.
