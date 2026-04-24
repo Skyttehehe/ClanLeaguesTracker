@@ -1,0 +1,11 @@
+# Exclude files that don't need to be uploaded to Vercel
+frontend/.next
+frontend/node_modules
+node_modules
+dist
+tests
+*.test.ts
+jest.config.cjs
+docker-compose*.yml
+Dockerfile
+start.sh
