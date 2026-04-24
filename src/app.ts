@@ -525,20 +525,16 @@ app.post("/players/refresh-points", async (req: Request, res: Response) => {
   let points = 0;
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { WOMClient } = require("@wise-old-man/utils") as { WOMClient: new (opts: { baseAPIUrl: string }) => { players: { getPlayerDetails: (name: string) => Promise<unknown> } } };
-    const client = new WOMClient({ baseAPIUrl: "https://api.wiseoldman.net/league" });
-    const playerDetails = await client.players.getPlayerDetails(usernameKey) as Record<string, unknown>;
-    const latestSnapshot = playerDetails?.latestSnapshot as Record<string, unknown> | undefined;
-    const data = latestSnapshot?.data as Record<string, unknown> | undefined;
-    const skills = data?.skills as Record<string, unknown> | undefined;
-    const overall = skills?.overall as Record<string, unknown> | undefined;
-    const exp = overall?.experience;
-    if (typeof exp === "number") {
-      points = exp;
+    const { WOMClient } = await import("@wise-old-man/utils");
+    const leagueClient = new WOMClient({ baseAPIUrl: "https://api.wiseoldman.net/league" });
+    // updatePlayer forces WOM to re-fetch from live league hiscores before reading
+    const playerDetails = await leagueClient.players.updatePlayer(usernameKey);
+    const leaguePointsScore = (playerDetails.latestSnapshot?.data?.activities as unknown as Record<string, { score: number }> | undefined)?.league_points?.score;
+    if (typeof leaguePointsScore === "number") {
+      points = leaguePointsScore;
     }
   } catch {
-    // Endpoint not live yet — fall back to 0
+    // League endpoint unavailable — fall back to 0
     points = 0;
   }
 

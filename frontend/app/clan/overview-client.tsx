@@ -67,14 +67,14 @@ const formatLocalDateLabel = (startUtc: string | null): string | null => {
 };
 
 const decoratePlayerName = (username: string, displayName: string): string => {
-  if (username.toLowerCase() === "kazalaosrs") {
+  if (username.toLowerCase() === "NoLegsToMax") {
     return `♿ ${displayName}`;
   }
   if (
     username.toLowerCase() === "asiangrinder" ||
-    displayName.toLowerCase() === "asiangrinder"
+    displayName.toLowerCase() === "gudinde"
   ) {
-    return `⛵ ${displayName}`;
+    return `🥄 ${displayName}`;
   }
   return displayName;
 };
@@ -444,20 +444,6 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
 
         {loading ? <p className="mt-3 text-sm text-slate-700 dark:text-slate-400">Loading members...</p> : null}
         {error ? <p className="mt-3 text-sm font-semibold text-ember dark:text-red-300">{error}</p> : null}
-
-        {/* Debug panel — remove once login is working */}
-        <details className="mt-3 rounded-lg border border-yellow-300 bg-yellow-50 px-3 py-2 text-xs dark:border-yellow-700 dark:bg-yellow-900/20">
-          <summary className="cursor-pointer font-semibold text-yellow-700 dark:text-yellow-300">Debug info (click to expand)</summary>
-          <ul className="mt-2 space-y-1 text-yellow-800 dark:text-yellow-200">
-            <li><strong>loading:</strong> {String(loading)}</li>
-            <li><strong>error:</strong> {error ?? "none"}</li>
-            <li><strong>currentUsername (localStorage):</strong> {currentUsername ?? "null — not found"}</li>
-            <li><strong>members loaded:</strong> {members.length}</li>
-            <li><strong>me found in members:</strong> {me ? "yes" : "no"}</li>
-            <li><strong>localStorage username:</strong> {typeof window !== "undefined" ? (window.localStorage.getItem("username") ?? "(none)") : "SSR"}</li>
-            <li><strong>localStorage clan:</strong> {typeof window !== "undefined" ? (window.localStorage.getItem("clan") ?? "(none)") : "SSR"}</li>
-          </ul>
-        </details>
 
         {!loading && !error && !currentUsername ? (
           <div className="mt-6 rounded-2xl border-2 border-amber-300 bg-amber-50 p-4 dark:border-amber-600 dark:bg-amber-900/20">
