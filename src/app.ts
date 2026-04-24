@@ -525,11 +525,13 @@ app.post("/players/refresh-points", async (req: Request, res: Response) => {
   let points = 0;
 
   try {
-    const { WOMClient } = await import("@wise-old-man/utils");
-    const leagueClient = new WOMClient({ baseAPIUrl: "https://api.wiseoldman.net/league" });
-    // updatePlayer forces WOM to re-fetch from live league hiscores before reading
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const womUtils = require("@wise-old-man/utils") as { WOMClient: new (opts: { baseAPIUrl: string }) => unknown };
+    const leagueClient = new womUtils.WOMClient({ baseAPIUrl: "https://api.wiseoldman.net/league" }) as {
+      players: { updatePlayer: (name: string) => Promise<{ latestSnapshot?: { data?: { activities?: unknown } } | null }> }
+    };
     const playerDetails = await leagueClient.players.updatePlayer(usernameKey);
-    const leaguePointsScore = (playerDetails.latestSnapshot?.data?.activities as unknown as Record<string, { score: number }> | undefined)?.league_points?.score;
+    const leaguePointsScore = (playerDetails.latestSnapshot?.data?.activities as Record<string, { score: number }> | undefined)?.league_points?.score;
     if (typeof leaguePointsScore === "number") {
       points = leaguePointsScore;
     }
