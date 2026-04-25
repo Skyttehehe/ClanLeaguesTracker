@@ -522,7 +522,7 @@ app.post("/players/refresh-points", async (req: Request, res: Response) => {
   const usernameKey = username.trim().toLowerCase();
   const clanKey = clan.trim().toLowerCase();
 
-  let points = 0;
+  let points: number | null = null;
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -536,19 +536,40 @@ app.post("/players/refresh-points", async (req: Request, res: Response) => {
       points = leaguePointsScore;
     }
   } catch {
-    // League endpoint unavailable — fall back to 0
-    points = 0;
+    // League endpoint unavailable — leave points as null to fall back to DB value
   }
 
   if (prisma) {
     try {
-      await prisma.regionSelection.updateMany({
-        where: { clanName: clanKey, username: usernameKey },
-        data: { points },
-      });
+      if (points !== null) {
+        // Fresh value from WOM — upsert into DB
+        await prisma.regionSelection.upsert({
+          where: { clanName_username: { clanName: clanKey, username: usernameKey } },
+          update: { points },
+          create: {
+            clanName: clanKey,
+            username: usernameKey,
+            displayClanName: clan.trim(),
+            displayUsername: username.trim(),
+            regions: [],
+            softRegions: [],
+            points,
+          },
+        });
+      } else {
+        // WOM call failed — read existing points from DB
+        const existing = await prisma.regionSelection.findUnique({
+          where: { clanName_username: { clanName: clanKey, username: usernameKey } },
+          select: { points: true },
+        });
+        points = existing?.points ?? 0;
+      }
     } catch {
-      // DB write failed — still return value
+      // DB read/write failed — return 0 as last resort
+      points = points ?? 0;
     }
+  } else {
+    points = points ?? 0;
   }
 
   return res.status(200).json({ points });
