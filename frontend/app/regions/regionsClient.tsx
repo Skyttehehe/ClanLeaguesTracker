@@ -25,9 +25,9 @@ const REGION_CARDS: RegionCard[] = [
     locked: true,
   },
   {
-    id: "misthalin",
-    name: "Misthalin",
-    imageUrl: "https://oldschool.runescape.wiki/images/Misthalin_Area_Badge.png",
+    id: "varlamore",
+    name: "Varlamore",
+    imageUrl: "https://oldschool.runescape.wiki/images/Varlamore_Area_Badge.png?2e60e",
     locked: true,
   },
   {
@@ -77,7 +77,7 @@ export default function RegionsClient({ clan, username }: RegionsClientProps) {
   // pickType: "hard" = green, "soft" = orange, undefined = not selected
   const [pickType, setPickType] = useState<Record<string, "hard" | "soft">>({
     karamja: "hard",
-    misthalin: "hard",
+    varlamore: "hard",
   });
   const [isSaving, setIsSaving] = useState(false);
   const [hasSaved, setHasSaved] = useState(false);

@@ -21,7 +21,7 @@ export const groupMembersQuerySchema = z.object({
 
 export type GroupMembersQuery = z.infer<typeof groupMembersQuerySchema>;
 
-const lockedRegionIds = ["karamja", "misthalin"] as const;
+const lockedRegionIds = ["karamja", "varlamore"] as const;
 
 export const saveRegionPicksSchema = z
   .object({
@@ -40,7 +40,7 @@ export const saveRegionPicksSchema = z
   )
   .refine(
     (value) => value.regions.map((region) => region.toLowerCase()).includes(lockedRegionIds[1]),
-    { message: "Misthalin must always be selected", path: ["regions"] },
+    { message: "Varlamore must always be selected", path: ["regions"] },
   )
   .refine(
     (value) => {

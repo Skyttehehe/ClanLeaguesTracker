@@ -356,7 +356,7 @@ app.post("/groups/picks", async (req: Request, res: Response) => {
   const normalizedRegions = parsedBody.data.regions.map((region) => region.toLowerCase());
   const uniqueRegions = Array.from(new Set(normalizedRegions));
   const extraUnlockedCount = uniqueRegions.filter(
-    (region) => region !== "karamja" && region !== "misthalin",
+    (region) => region !== "karamja" && region !== "varlamore",
   ).length;
 
   if (uniqueRegions.length < 2 || uniqueRegions.length > 5) {
