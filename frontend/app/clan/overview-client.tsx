@@ -206,10 +206,10 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
 
   const displayedMembers = useMemo(() => {
     let list = [...members];
-    // Registered first
+    // Registered first, then sort by points descending within each group
     list.sort((a, b) => {
-      if (a.registered === b.registered) return 0;
-      return a.registered ? -1 : 1;
+      if (a.registered !== b.registered) return a.registered ? -1 : 1;
+      return b.points - a.points;
     });
     // Apply region filter
     if (filterRegion) {
