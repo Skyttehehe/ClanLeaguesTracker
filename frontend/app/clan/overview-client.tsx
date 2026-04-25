@@ -35,7 +35,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3000"
 
 const REGION_IMAGES: Record<string, string> = {
   karamja: "https://oldschool.runescape.wiki/images/Karamja_Area_Badge.png",
-  misthalin: "https://oldschool.runescape.wiki/images/Misthalin_Area_Badge.png",
+  varlamore: "https://oldschool.runescape.wiki/images/Varlamore_Area_Badge.png?2e60e",
   asgarnia: "https://oldschool.runescape.wiki/images/Asgarnia_Area_Badge.png?4ec29",
   desert: "https://oldschool.runescape.wiki/images/Desert_Area_Badge.png?2a1e3",
   fremennik: "https://oldschool.runescape.wiki/images/Fremennik_Area_Badge.png?f8338",
@@ -48,7 +48,7 @@ const REGION_IMAGES: Record<string, string> = {
 
 const REGION_LABELS: Record<string, string> = {
   karamja: "Karamja",
-  misthalin: "Misthalin",
+  varlamore: "Varlamore",
   asgarnia: "Asgarnia",
   desert: "Desert",
   fremennik: "Fremennik",
@@ -111,7 +111,7 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
   const [noteDraft, setNoteDraft] = useState("");
   const [pickDraft, setPickDraft] = useState<Record<string, "hard" | "soft">>({
     karamja: "hard",
-    misthalin: "hard",
+    varlamore: "hard",
   });
   const [availabilityYear, setAvailabilityYear] = useState(() => new Date().getFullYear());
   const [availabilityMonth, setAvailabilityMonth] = useState("");
@@ -249,7 +249,7 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
     setNoteDraft(me.noteText ?? "");
     const draft: Record<string, "hard" | "soft"> = {
       karamja: "hard",
-      misthalin: "hard",
+      varlamore: "hard",
     };
     const softSet = new Set((me.softRegions ?? []).map((r) => r.toLowerCase()));
     (me.regions ?? []).forEach((region) => {
@@ -337,12 +337,12 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
   const selectedPickCount = useMemo(() => Object.keys(pickDraft).length, [pickDraft]);
   const unlockedPickCount = useMemo(
     () =>
-      Object.keys(pickDraft).filter((id) => id !== "karamja" && id !== "misthalin").length,
+      Object.keys(pickDraft).filter((id) => id !== "karamja" && id !== "varlamore").length,
     [pickDraft],
   );
 
   const togglePickDraft = (regionId: string) => {
-    if (regionId === "karamja" || regionId === "misthalin" || isUpdatingPicks) {
+    if (regionId === "karamja" || regionId === "varlamore" || isUpdatingPicks) {
       return;
     }
 
@@ -732,7 +732,7 @@ export default function ClanOverviewClient({ clan }: ClanOverviewClientProps) {
                     <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
                       {Object.entries(REGION_LABELS).map(([regionId, label]) => {
                         const pickType = pickDraft[regionId];
-                        const isLocked = regionId === "karamja" || regionId === "misthalin";
+                        const isLocked = regionId === "karamja" || regionId === "varlamore";
                         const cardClass =
                           pickType === "hard"
                             ? "border-green-600 bg-green-50 dark:border-green-500/60 dark:bg-green-900/25"
