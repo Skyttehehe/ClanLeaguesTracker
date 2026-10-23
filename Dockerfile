@@ -1,5 +1,5 @@
 # Backend Dockerfile - Multi-stage build
-FROM node:20-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 
 # Install OpenSSL so Prisma engine binaries can load during build
 RUN apk add --no-cache openssl
@@ -18,7 +18,7 @@ RUN npm run build
 RUN npx prisma generate
 
 # Production stage
-FROM node:20-alpine
+FROM node:24.22.1-alpine
 
 # Install OpenSSL so Prisma engine binaries can load at runtime
 RUN apk add --no-cache openssl
