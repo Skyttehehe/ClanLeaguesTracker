@@ -1,5 +1,5 @@
 # Frontend Dockerfile - Next.js standalone build
-FROM node:20-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 RUN npm run build
 
 # Production stage - standalone output is self-contained
-FROM node:20-alpine
+FROM node:24.22.1-alpine
 
 WORKDIR /app
 

@@ -1,15 +1,16 @@
 import RegionsClient from "./regionsClient";
 
 type RegionsPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     clan?: string;
     username?: string;
-  };
+  }>;
 };
 
-export default function RegionsPage({ searchParams }: RegionsPageProps) {
-  const clan = searchParams?.clan ?? "Unknown Clan";
-  const username = searchParams?.username ?? "Unknown Player";
+export default async function RegionsPage({ searchParams }: RegionsPageProps) {
+  const params = await searchParams;
+  const clan = params?.clan ?? "Unknown Clan";
+  const username = params?.username ?? "Unknown Player";
 
   return <RegionsClient clan={clan} username={username} />;
 }
